@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'bootstrap_toolkit',
-    # 'userlogin',
+    'userlogin',
     'tasks',
 )
 

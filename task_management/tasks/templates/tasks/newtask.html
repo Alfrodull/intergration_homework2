@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %}
+{% load url from future %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新建任务</title>
+    <meta name="description" content="">
+    {% bootstrap_stylesheet_tag %}
+    {% bootstrap_stylesheet_tag "responsive" %}
+
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+  
+    <div class="container well">
+        <h1>新建任务</h1>
+
+        <form class="form-horizontal" action="" method="post">
+            {% csrf_token %}
+            {{ form|as_bootstrap:"horizontal" }}
+            <p class="form-actions">
+                <input type="submit" value="新建" class="btn btn-primary">
+            	<input value="返回" type="submit" formaction="/tasks/" class="btn btn-primary">
+            </p>
+        </form>
+    </div>
+
+</body>
+</html>

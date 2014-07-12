@@ -7,8 +7,8 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'task_management.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^$', 'tasks.views.index'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/login/$',  'userlogin.views.login'),  
     url(r'^tasks/', include('tasks.urls')),
+    url(r'^accounts/', include('userlogin.urls'))
 )
