@@ -5,7 +5,9 @@ from tasks.models import Task
 from tasks.forms import TaskForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.mail import send_mail
+from tasks import exe
 
 def index(request):
 	user = request.user
@@ -52,3 +54,15 @@ def newtask(request):
 		else:
 			return render_to_response('tasks/newtask.html', 
 				RequestContext(request,{'form':form}))
+
+
+@login_required
+def execute(request):
+	if request.user.is_staff:
+		task_todo = Task.objects.filter(status=False)
+		for task in task_todo:
+			exe.task_funcs[task.task_type](task)
+
+		return HttpResponseRedirect("/tasks/")
+	else:
+		return HttpResponse('forbidden')

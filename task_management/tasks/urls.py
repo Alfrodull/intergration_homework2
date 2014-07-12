@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     # name='index'
     # ),
 	url(r'^new$', views.newtask, name='newtask'),
+	url(r'^execute$', views.execute, name='execute'),
 )
