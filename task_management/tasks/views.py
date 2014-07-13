@@ -7,7 +7,9 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.mail import send_mail
-from tasks import exe
+import os
+from task_management.settings import BASE_DIR
+# from tasks import exe
 
 def index(request):
 	user = request.user
@@ -58,11 +60,16 @@ def newtask(request):
 
 @login_required
 def execute(request):
-	if request.user.is_staff:
-		task_todo = Task.objects.filter(status=False)
-		for task in task_todo:
-			exe.task_funcs[task.task_type](task)
+	# if request.user.is_staff:
+	# 	task_todo = Task.objects.filter(status=False)
+	# 	for task in task_todo:
+	# 		exe.task_funcs[task.task_type](task)
 
-		return HttpResponseRedirect("/tasks/")
-	else:
-		return HttpResponse('forbidden')
+	# 	return HttpResponseRedirect("/tasks/")
+	# else:
+	# 	return HttpResponse('forbidden')
+	pydir = os.path.join(BASE_DIR, 'pyscript')
+	pyexe = os.path.join(pydir, 'junk.py')
+	result = os.popen('python %s args' % pyexe).read() 
+	
+	return HttpResponse(result)
