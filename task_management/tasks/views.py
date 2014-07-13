@@ -67,15 +67,19 @@ def execute(request):
 	if request.user.is_staff: #只有管理员才有权发起执行任务的方法
 		#选取未完成的任务,逐个执行
 		task_todo = Task.objects.filter(status=False)
+
 		for task in task_todo:
 			args = str(task.task_type) + ' ' + task.param
-			result = os.popen('python %s %s' % (pyexe,args)).read() 
-			#将执行结果通过邮件发送给用户
+			comd = 'python ' + pyexe + ' ' + args
+			result = os.popen(comd.encode('utf8')).read()
+
+			# 将执行结果通过邮件发送给用户
 			sender='njuswialftask@163.com'  
 			mail_list=[task.user.email]  
 			massage='Task Tpye: ' + str(task.task_type) \
 			        + '\t' + 'Task Paramete: ' + task.param \
-			        + '\nResult:\n' + result 
+			        + '\nResult:\n'
+			massage = massage.encode('utf8') + result
 			send_mail(  
 			            subject='Task done. ID=' + str(task.id),    
 			            message=massage,    
@@ -84,7 +88,7 @@ def execute(request):
 			            fail_silently=False,    
 			            connection=None    
 			        )
-			#修改任务状态，并保存至数据库
+			# 修改任务状态，并保存至数据库
 			task.status = True
 			task.save()
 

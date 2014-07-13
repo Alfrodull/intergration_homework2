@@ -26,16 +26,17 @@ def task_web(args):
 	start_city = args[0].decode('utf8')
 	last_city = args[1].decode('utf8')
 	date = "%04d-%02d-%02d" % (string.atoi(args[2]),string.atoi(args[3]),string.atoi(args[4]))
+
 	result = proxy.getDomesticAirlinesTime(startCity=start_city,lastCity=last_city,theDate=date)
 	# print result
 	for i in result[1].Airlines.AirlinesTime:
-		print i.Company
-		print i.AirlineCode
-		print i.StartDrome
-		print i.ArriveDrome
-		print i.Mode
-		print i.AirlineStop
-		print i.Week
+		print i.Company.encode('utf8')
+		print i.AirlineCode.encode('utf8')
+		print i.StartDrome.encode('utf8')
+		print i.ArriveDrome.encode('utf8')
+		print i.Mode.encode('utf8')
+		print i.AirlineStop.encode('utf8')
+		print i.Week.encode('utf8')
 		print '\n'
 
 
