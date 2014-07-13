@@ -60,16 +60,35 @@ def newtask(request):
 
 @login_required
 def execute(request):
-	# if request.user.is_staff:
-	# 	task_todo = Task.objects.filter(status=False)
-	# 	for task in task_todo:
-	# 		exe.task_funcs[task.task_type](task)
-
-	# 	return HttpResponseRedirect("/tasks/")
-	# else:
-	# 	return HttpResponse('forbidden')
 	pydir = os.path.join(BASE_DIR, 'pyscript')
-	pyexe = os.path.join(pydir, 'junk.py')
-	result = os.popen('python %s args' % pyexe).read() 
-	
-	return HttpResponse(result)
+	#用于处理任务的python程序:
+	pyexe = os.path.join(pydir, 'execute_task.py')
+
+	if request.user.is_staff: #只有管理员才有权发起执行任务的方法
+		#选取未完成的任务,逐个执行
+		task_todo = Task.objects.filter(status=False)
+		for task in task_todo:
+			args = str(task.task_type) + ' ' + task.param
+			result = os.popen('python %s %s' % (pyexe,args)).read() 
+			#将执行结果通过邮件发送给用户
+			sender='njuswialftask@163.com'  
+			mail_list=[task.user.email]  
+			massage='Task Tpye: ' + str(task.task_type) \
+			        + '\t' + 'Task Paramete: ' + task.param \
+			        + '\nResult:\n' + result 
+			send_mail(  
+			            subject='Task done. ID=' + str(task.id),    
+			            message=massage,    
+			            from_email=sender,  
+			            recipient_list=mail_list,    
+			            fail_silently=False,    
+			            connection=None    
+			        )
+			#修改任务状态，并保存至数据库
+			task.status = True
+			task.save()
+
+		return HttpResponseRedirect("/tasks/")
+	else:
+		return HttpResponse('forbidden')
+	# return HttpResponse(pyexe)
